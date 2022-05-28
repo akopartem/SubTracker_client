@@ -73,12 +73,26 @@ public class AddSub extends AppCompatActivity {
                 ((TextInputLayout) findViewById(R.id.price)).setError("введите цену");
                 return;
             }
+            if (Integer.parseInt(price.getText().toString())<= 0) {
+                ((TextInputLayout) findViewById(R.id.price)).setError("введите корректную цену");
+                return;
+            }
             if (!Pattern.matches("(\\d{2}\\.\\d{2}\\.\\d{4})", date.getText())) {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("введите дату в формате dd/mm/yyyy");
                 return;
             }
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
+            if (LocalDate.now().compareTo(LocalDate.parse(date.getText().toString(), formatter)) < 0) {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError("вы из будущего?");
+                return;
+            }
 
-            if (name.getText().toString().isEmpty()) {
+            if (LocalDate.now().minusDays(32).compareTo(LocalDate.parse(date.getText().toString(), formatter)) >= 0) {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError("дата списания была месяц назад или больше");
+                return;
+            }
+
+            if (name.getText().toString().trim().isEmpty()) {
                 ((TextInputLayout) findViewById(R.id.name)).setError("введите название");
                 return;
             }
@@ -87,7 +101,6 @@ public class AddSub extends AppCompatActivity {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("введите цену");
                 return;
             }
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
             new Thread(() -> {
                 Retrofit retrofit = new Retrofit.Builder()
                         .addConverterFactory(GsonConverterFactory.create())

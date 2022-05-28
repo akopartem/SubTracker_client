@@ -1,6 +1,5 @@
 package xyz.akopartem.subtracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,14 +9,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +26,23 @@ public class MainActivity extends AppCompatActivity {
         activity = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        new AlertDialog.Builder(this)
+                                .setTitle("Произошла ошибка!")
+                                .setMessage("К сожалению произошла непредвиденная ошибка, просим перезапустить или переустановить приложение. В случае дальнейших проблем предлагаю связаться со мной, tg:akopartem")
+                                .setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, id) -> {
+                                    finishAffinity();
+                                    dialog.cancel();
+                                })
+                                .setOnDismissListener((dialog) -> {
+                                    finishAffinity();
+                                    dialog.cancel();
+                                }).show();
+                    }
+                    MainActivity.token = task.getResult();
+                });
         if (!Checker.isInternetAvailable(this)) {
             new AlertDialog.Builder(this)
                     .setTitle("Отсутствует подключение к интернету!")

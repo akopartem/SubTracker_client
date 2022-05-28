@@ -3,7 +3,6 @@ package xyz.akopartem.subtracker;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,11 +51,6 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.ViewHolder> {
     public void onBindViewHolder(SubAdapter.ViewHolder holder, int position) {
         Sub s = list.get(position);
         holder.nameView.setText(s.name);
-        if (Period.between(LocalDate.now(), s.date).getDays() >= 30) {
-            DBManager.dbManager.exec("UPDATE subs SET date = " + LocalDate.now() + " WHERE name = " + s.name + " AND price = " + s.price + " AND date = " + s.date.toString() + "LIMIT 1;");
-            list.get(position).date = LocalDate.now();
-        }
-        holder.dateView.setText(s.date.minusDays(1).toString());
         holder.priceView.setText(s.price + "₽");
         holder.btn.setOnClickListener(e -> {
             if (!Checker.isInternetAvailable(MainActivity.activity)) {
@@ -92,7 +83,6 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.ViewHolder> {
                     HashMap<String, String> ss = new HashMap<>();
                     ss.put("name", holder.nameView.getText().toString());
                     ss.put("price", s.price + "");
-                    ss.put("lastDate", s.date.toString());
                     ss.put("token", MainActivity.token);
                     ts.send(ss).execute();
                 } catch (IOException ee) {
@@ -107,17 +97,15 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameView = null;
-        TextView priceView = null;
-        TextView dateView = null;
-        Button btn = null;
+        TextView nameView;
+        TextView priceView;
+        Button btn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.findViewById(R.id.ll).setBackgroundResource(R.drawable.krugliye_ugli);
             nameView = itemView.findViewById(R.id.nameO);
             priceView = itemView.findViewById(R.id.priceO);
-            dateView = itemView.findViewById(R.id.next);
             btn = itemView.findViewById(R.id.btnn);
         }
     }

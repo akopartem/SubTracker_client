@@ -1,7 +1,6 @@
 package xyz.akopartem.subtracker;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Sub {
     String name;

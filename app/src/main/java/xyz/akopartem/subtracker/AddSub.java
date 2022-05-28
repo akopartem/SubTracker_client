@@ -64,42 +64,61 @@ public class AddSub extends AppCompatActivity {
                             dialog.cancel();
                         }).show();
             }
+            int sum = Integer.parseInt(price.getText().toString());
+            price.setText(sum + "");
+
             if (name.getText().length() > 10) {
                 ((TextInputLayout) findViewById(R.id.name)).setError("не больше 10 символов!");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.name)).setError(null);
             }
 
             if (price.length() == 0) {
                 ((TextInputLayout) findViewById(R.id.price)).setError("введите цену");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.price)).setError(null);
             }
             if (Integer.parseInt(price.getText().toString())<= 0) {
                 ((TextInputLayout) findViewById(R.id.price)).setError("введите корректную цену");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.price)).setError(null);
             }
             if (!Pattern.matches("(\\d{2}\\.\\d{2}\\.\\d{4})", date.getText())) {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("введите дату в формате dd/mm/yyyy");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError(null);
             }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
             if (LocalDate.now().compareTo(LocalDate.parse(date.getText().toString(), formatter)) < 0) {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("вы из будущего?");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError(null);
             }
 
             if (LocalDate.now().minusDays(32).compareTo(LocalDate.parse(date.getText().toString(), formatter)) >= 0) {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("дата списания была месяц назад или больше");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError(null);
             }
 
             if (name.getText().toString().trim().isEmpty()) {
                 ((TextInputLayout) findViewById(R.id.name)).setError("введите название");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.name)).setError(null);
             }
 
             if (price.getText().toString().replace("\\s", "").isEmpty()) {
                 ((TextInputLayout) findViewById(R.id.datepick)).setError("введите цену");
                 return;
+            } else {
+                ((TextInputLayout) findViewById(R.id.datepick)).setError(null);
             }
             new Thread(() -> {
                 Retrofit retrofit = new Retrofit.Builder()
